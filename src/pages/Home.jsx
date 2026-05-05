@@ -8,7 +8,7 @@ import DailyCard from "../components/HomeComponents/DailyCard";
 import Header from "../components/HomeComponents/Header";
 import SalahTime from "../components/HomeComponents/SalahTime";
 import SandITime from "../components/HomeComponents/SandITime";
-import useCustomFunction from "../hooks/useCustomFunction";
+import useCustomFunction from "../Hooks/useCustomFunction";
 import { getLocationName } from "../utils/api.js";
 
 export default function Home() {
