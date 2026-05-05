@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* Global resets */
+a {
+  text-decoration: none;
+}
+
+audio {
+  z-index: 0;
+}
+
+/* Shimmer animation - can't be expressed as pure Tailwind utilities */
+@layer utilities {
+  .shimmer {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.02) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.02) 75%);
+    background-size: 200% 100%;
+    animation: shimmerEffect 1.2s infinite linear;
+    border-radius: 5px;
+    height: 40px;
+    width: 90%;
+    margin: 10px auto;
+    list-style: none;
+  }
+
+  .shimmer-ayah {
+    height: 20px;
+    width: 90%;
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.02) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.02) 75%);
+    background-size: 200% 100%;
+    animation: shimmerEffect 1.2s infinite linear;
+    border-radius: 4px;
+    margin: 5px auto;
+    list-style: none;
+  }
+
+  /* Card underline pseudo-element effect */
+  .card-underline::after {
+    content: "";
+    display: block;
+    width: 50%;
+    height: 2px;
+    background: #ff9800;
+    margin: 5px auto 0;
+    border-radius: 2px;
+  }
+}
+
+@keyframes shimmerEffect {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
