@@ -1,5 +1,4 @@
 import moment from "moment";
-import { useRef } from "react";
 
 export default function DailyHeader({ activeTab, setActiveTab, trackingStart }) {
     return (

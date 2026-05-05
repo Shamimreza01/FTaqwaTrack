@@ -9,6 +9,7 @@ export default function DuaLoad() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMemorizeMode, setIsMemorizeMode] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const { dataName } = useParams();
 
   const { memorizedDuaIds, toggleMemorizedDua } = useSettings();
@@ -38,6 +39,22 @@ export default function DuaLoad() {
     openRequest.onsuccess = async (e) => {
       const db = e.target.result;
 
+      // If the DB exists but is missing the "duas" store (broken state),
+      // close it, delete it, and reopen to trigger onupgradeneeded properly.
+      if (!db.objectStoreNames.contains("duas")) {
+        db.close();
+        const deleteRequest = indexedDB.deleteDatabase("DuaDB");
+        deleteRequest.onsuccess = () => {
+          console.log("Deleted broken DuaDB, reopening...");
+          openIndexedDB(); // Retry — this time onupgradeneeded will fire
+        };
+        deleteRequest.onerror = () => {
+          setIsLoading(false);
+          setLoadError(true);
+        };
+        return;
+      }
+
       // Open a read transaction to get local data
       const readTransaction = db.transaction(["duas"], "readonly");
       const store = readTransaction.objectStore("duas");
@@ -49,7 +66,11 @@ export default function DuaLoad() {
         // If offline, just use local data
         if (!navigator.onLine) {
           console.log("Offline — using local data");
-          setDuas(localData);
+          if (localData) {
+            setDuas(localData);
+          } else {
+            setLoadError(true);
+          }
           setIsLoading(false);
           return;
         }
@@ -76,7 +97,11 @@ export default function DuaLoad() {
           }
         } catch (err) {
           console.error("API fetch error:", err);
-          setDuas(localData); // Fallback to local
+          if (localData) {
+            setDuas(localData);
+          } else {
+            setLoadError(true);
+          }
         }
 
         setIsLoading(false);
@@ -85,6 +110,8 @@ export default function DuaLoad() {
 
     openRequest.onerror = (e) => {
       console.error("Error opening IndexedDB", e);
+      setIsLoading(false);
+      setLoadError(true);
     };
   };
 
@@ -109,6 +136,22 @@ export default function DuaLoad() {
 
   return isLoading ? (
     <AlQuranLoadShimmer name={name} />
+  ) : loadError || !duas ? (
+    <div className="font-[system-ui] py-[80px] px-4 max-w-4xl mx-auto min-h-screen text-white flex flex-col items-center justify-center gap-6">
+        <div className="text-center">
+            <i className={`fa-solid ${!navigator.onLine ? 'fa-wifi' : 'fa-triangle-exclamation'} text-5xl text-red-400/60 mb-4`}></i>
+            <h2 className="text-2xl font-bold text-white/80 mb-2">Unable to Load Duas</h2>
+            <p className="text-white/40 max-w-sm">
+                {!navigator.onLine 
+                    ? "You are offline. Please connect to the internet to download the Dua data. It will be saved offline for future use."
+                    : "The server is starting up (this can take up to 30 seconds on first load). Please tap 'Try Again' in a moment."
+                }
+            </p>
+        </div>
+        <button onClick={() => { setLoadError(false); setIsLoading(true); openIndexedDB(); }} className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-full transition-all shadow-lg shadow-emerald-500/30">
+            <i className="fa-solid fa-rotate-right mr-2"></i> Try Again
+        </button>
+    </div>
   ) : (
     <div className="font-[system-ui] py-[80px] px-4 max-w-4xl mx-auto min-h-screen text-white">
       <div className="w-full bg-[#021B1A]/90 backdrop-blur-xl border-b border-white/10 p-4 fixed top-0 left-0 z-50 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">

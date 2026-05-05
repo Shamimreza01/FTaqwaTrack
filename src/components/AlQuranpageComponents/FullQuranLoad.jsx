@@ -4,7 +4,7 @@ import AlQuranLoadShimmer from "./AlQuranLoadShimmer";
 import AyahCard from "./AyahCard";
 
 async function openIndexedDB() {
-  return openDB("fullQuranDB", 1, {
+  const db = await openDB("fullQuranDB", 1, {
     upgrade(db) {
       if (!db.objectStoreNames.contains("quranData")) {
         const store = db.createObjectStore("quranData", { keyPath: "id" });
@@ -12,12 +12,24 @@ async function openIndexedDB() {
       }
     },
   });
+  // Self-heal: if DB exists but store is missing (broken state), recreate it
+  if (!db.objectStoreNames.contains("quranData")) {
+    db.close();
+    await new Promise((resolve, reject) => {
+      const req = indexedDB.deleteDatabase("fullQuranDB");
+      req.onsuccess = resolve;
+      req.onerror = reject;
+    });
+    return openIndexedDB();
+  }
+  return db;
 }
 
 export default function FullQuranLoad({ name = "Al-Quran" }) {
   const [surahs, setSurahs] = useState(null);
   const [selectedSurah, setSelectedSurah] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [isMemorizeMode, setIsMemorizeMode] = useState(false);
   const [memorizedAyahIds, setMemorizedAyahIds] = useState(() => {
     const saved = localStorage.getItem("memorizedAyahsHifz");
@@ -53,6 +65,8 @@ export default function FullQuranLoad({ name = "Al-Quran" }) {
       }
     } catch (error) {
       console.error("Error fetching Quran data:", error);
+      setIsLoading(false);
+      setLoadError(true);
     }
   };
 
@@ -62,6 +76,22 @@ export default function FullQuranLoad({ name = "Al-Quran" }) {
 
   return isLoading ? (
     <AlQuranLoadShimmer name={name} />
+  ) : loadError || !surahs ? (
+    <div className="font-[system-ui] py-[80px] px-4 max-w-4xl mx-auto min-h-screen text-white flex flex-col items-center justify-center gap-6">
+        <div className="text-center">
+            <i className={`fa-solid ${!navigator.onLine ? 'fa-wifi' : 'fa-triangle-exclamation'} text-5xl text-red-400/60 mb-4`}></i>
+            <h2 className="text-2xl font-bold text-white/80 mb-2">Unable to Load Quran</h2>
+            <p className="text-white/40 max-w-sm">
+                {!navigator.onLine 
+                    ? "You are offline. Please connect to the internet to download the Quran data. It will be saved offline for future use."
+                    : "The server is starting up (this can take up to 30 seconds on first load). Please tap 'Try Again' in a moment."
+                }
+            </p>
+        </div>
+        <button onClick={() => { setLoadError(false); setIsLoading(true); loadQuran(); }} className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-full transition-all shadow-lg shadow-emerald-500/30">
+            <i className="fa-solid fa-rotate-right mr-2"></i> Try Again
+        </button>
+    </div>
   ) : (
     <div className="font-[system-ui] py-[80px] px-4 max-w-4xl mx-auto min-h-screen text-white">
       {selectedSurah ? (

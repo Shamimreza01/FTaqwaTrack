@@ -28,7 +28,14 @@ export default function Collections() {
         const fetchDatabases = async () => {
             // 1. Fetch Ayahs
             try {
-                const quranDB = await openDB("fullQuranDB", 1);
+                const quranDB = await openDB("fullQuranDB", 1, {
+                    upgrade(db) {
+                        if (!db.objectStoreNames.contains("quranData")) {
+                            const store = db.createObjectStore("quranData", { keyPath: "id" });
+                            store.createIndex("by_id", "id");
+                        }
+                    }
+                });
                 const quranData = await quranDB.get("quranData", 1);
                 if (quranData && quranData.data) {
                     const flatAyahs = [];
@@ -46,23 +53,32 @@ export default function Collections() {
                     2: "FortyMotivationalAyah",
                     3: "AfterSalahDua"
                 };
-                const duaDB = await openDB("DuaDB", 1);
-                const tx = duaDB.transaction("duas", "readonly");
-                const store = tx.objectStore("duas");
-                const keys = await store.getAllKeys();
-
-                const mappedDuas = {};
-                for (const key of keys) {
-                    const obj = await store.get(key);
-                    if (obj && obj.data) {
-                        const dataName = duaMetaReverse[key];
-                        obj.data.forEach(dua => {
-                            const uid = `${dataName}_${dua.dua_number || dua.ayah_number}`;
-                            mappedDuas[uid] = { dua, dataName };
-                        });
+                const duaDB = await openDB("DuaDB", 1, {
+                    upgrade(db) {
+                        if (!db.objectStoreNames.contains("duas")) {
+                            const store = db.createObjectStore("duas", { keyPath: "id" });
+                            store.createIndex("id", "id", { unique: true });
+                        }
                     }
+                });
+                if (duaDB.objectStoreNames.contains("duas")) {
+                    const tx = duaDB.transaction("duas", "readonly");
+                    const store = tx.objectStore("duas");
+                    const keys = await store.getAllKeys();
+
+                    const mappedDuas = {};
+                    for (const key of keys) {
+                        const obj = await store.get(key);
+                        if (obj && obj.data) {
+                            const dataName = duaMetaReverse[key];
+                            obj.data.forEach(dua => {
+                                const uid = `${dataName}_${dua.dua_number || dua.ayah_number}`;
+                                mappedDuas[uid] = { dua, dataName };
+                            });
+                        }
+                    }
+                    setAllDuas(mappedDuas);
                 }
-                setAllDuas(mappedDuas);
             } catch (e) { console.error("Dua DB read fail", e) }
 
             setIsLoading(false);
