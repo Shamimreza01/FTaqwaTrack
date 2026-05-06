@@ -22,6 +22,7 @@ export default function Home() {
   const [prayerTimes, setPrayerTimes] = useState(null);
   const [localTimeZone, setLocalTimeZone] = useState("");
   const [prayerName, setPrayerName] = useState("");
+  console.log("testing................");
 
   const formatTime = (date, timeZone) => {
     return moment(date).tz(timeZone).format("hh:mm A");
