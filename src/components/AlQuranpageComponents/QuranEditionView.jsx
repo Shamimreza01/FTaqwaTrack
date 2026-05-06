@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useSettings } from "../../contexts/SettingsContext";
 import { useTheme } from "../../contexts/ThemeContext";
-import BookmarkIcon from "../../Icons/BookmarkIcon";
-import HeartIcon from "../../Icons/HeartIcon";
-import LeftArrowIcon from "../../Icons/LeftArrowIcon";
+import BookmarkIcon from "../../Icon/BookmarkIcon";
+import HeartIcon from "../../Icon/HeartIcon";
+import LeftArrowIcon from "../../Icon/LeftArrowIcon";
 import AlQuranLoadShimmer from "./AlQuranLoadShimmer";
 
 async function openIndexedDB() {
