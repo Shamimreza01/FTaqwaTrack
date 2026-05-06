@@ -1,37 +1,44 @@
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTheme } from "../../contexts/ThemeContext";
+import { Home, BookOpen, HandHelping, Calendar, Menu } from "lucide-react";
 
 export default function BottomNav() {
+  const { theme, s } = useTheme();
+  
   const tabs = [
-    { name: "Home", icon: "fa-house", path: "/" },
-    { name: "Quran", icon: "fa-book-open", path: "/quran" },
-    { name: "Dua", icon: "fa-hands-praying", path: "/learn-dua" },
-    { name: "Daily", icon: "fa-calendar-day", path: "/daily" },
-    { name: "Menu", icon: "fa-bars", path: "/menu" }
+    { name: "Home", icon: Home, path: "/" },
+    { name: "Quran", icon: BookOpen, path: "/quran" },
+    { name: "Dua", icon: HandHelping, path: "/learn-dua" },
+    { name: "Daily", icon: Calendar, path: "/daily" },
+    { name: "Menu", icon: Menu, path: "/menu" }
   ];
 
   return (
     <div className="fixed bottom-6 w-full flex justify-center z-50 px-4 pointer-events-none">
-      <div className="flex justify-around items-center bg-[#061924]/80 backdrop-blur-xl border border-white/10 p-2 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)] w-full max-w-sm pointer-events-auto relative">
+      <div className={`flex justify-around items-center ${s.nav} border p-2 rounded-full shadow-2xl w-full max-w-sm pointer-events-auto relative overflow-hidden`}>
         {tabs.map((tab) => (
           <NavLink
             key={tab.name}
             to={tab.path}
             className={({ isActive }) =>
-              `relative flex flex-col items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${isActive ? "text-emerald-400" : "text-white/50 hover:text-white hover:bg-white/5"
+              `relative flex flex-col items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${
+                isActive 
+                  ? (theme === 'dark' ? "text-cyan-400" : "text-emerald-600") 
+                  : `${s.text} opacity-50 hover:opacity-100 hover:bg-white/5`
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <i className={`fa-solid ${tab.icon} text-lg transition-transform duration-300 ${isActive ? '-translate-y-1 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]' : ''}`}></i>
-                <span className={`text-[0.6rem] font-medium absolute bottom-1.5 transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
+                <tab.icon className={`w-5 h-5 transition-transform duration-300 ${isActive ? '-translate-y-1' : ''}`} />
+                <span className={`text-[0.6rem] font-bold absolute bottom-1.5 transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
                   {tab.name}
                 </span>
                 {isActive && (
                   <motion.div
                     layoutId="activeTabBadge"
-                    className="absolute bottom-0 w-1 h-1 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,1)]"
+                    className={`absolute bottom-0 w-1 h-1 ${theme === 'dark' ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,1)]' : 'bg-emerald-600 shadow-[0_0_8px_rgba(5,150,105,0.6)]'} rounded-full`}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   />
                 )}

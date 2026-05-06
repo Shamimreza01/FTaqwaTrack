@@ -8,8 +8,10 @@ import DailyCard from "../components/HomeComponents/DailyCard";
 import Header from "../components/HomeComponents/Header";
 import SalahTime from "../components/HomeComponents/SalahTime";
 import SandITime from "../components/HomeComponents/SandITime";
-import useCustomFunction from "../Hooks/useCustomFunction";
+import useCustomFunction from "../hooks/useCustomFunction";
 import { getLocationName } from "../utils/api.js";
+import { useTheme } from "../contexts/ThemeContext";
+import { Layers, ChevronRight } from "lucide-react";
 
 export default function Home() {
   const { getGeolocation } = useCustomFunction();
@@ -108,8 +110,10 @@ export default function Home() {
     setLocalTimeZone(localTimeZone);
   };
 
+  const { theme, s } = useTheme();
+
   return (
-    <div className="z-10 relative px-4 w-full max-w-xl lg:max-w-[1440px] mx-auto transition-all duration-500">
+    <div className={`z-10 relative px-4 w-full max-w-xl lg:max-w-[1440px] mx-auto transition-all duration-500 ${s.text}`}>
       <Header
         location={locationName}
         getGeolocation={getGeolocation}
@@ -119,8 +123,8 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Sidebar Area: Time & Prayers (Sticky on Desktop) */}
           <div className="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 lg:sticky lg:top-24">
-            <div className="bg-emerald-950/20 backdrop-blur-xl border border-emerald-500/10 rounded-[32px] p-8 shadow-2xl relative overflow-hidden group hidden lg:block">
-              <div className="absolute -right-20 -top-20 w-60 h-60 bg-emerald-500/5 rounded-full blur-[80px] group-hover:bg-emerald-500/10 transition-all duration-700"></div>
+            <div className={`${s.card} border rounded-[32px] p-8 shadow-2xl relative overflow-hidden group hidden lg:block`}>
+              <div className={`absolute -right-20 -top-20 w-60 h-60 ${theme === 'dark' ? 'bg-cyan-500/5' : 'bg-blue-500/5'} rounded-full blur-[80px] group-hover:scale-110 transition-all duration-700`}></div>
               <CurrentTime />
             </div>
 
@@ -138,49 +142,31 @@ export default function Home() {
 
           {/* Main Content Area */}
           <div className="lg:col-span-8 xl:col-span-9 flex flex-col gap-8">
-            <div className="bg-gradient-to-br from-emerald-900/10 to-[#021B1A]/40 backdrop-blur-md border border-emerald-500/10 rounded-[32px] p-4 lg:p-8 shadow-xl">
+            <div className={`${s.card} border rounded-[32px] p-4 lg:p-8 shadow-xl relative overflow-hidden`}>
+              <div className={`absolute -left-20 -bottom-20 w-60 h-60 ${theme === 'dark' ? 'bg-cyan-500/5' : 'bg-blue-500/5'} rounded-full blur-[80px] pointer-events-none`}></div>
               <SandITime time={time} />
             </div>
 
             {/* Grid of Interaction Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {/* My Collections - Featured Card */}
-              <Link to="/collections" className="md:col-span-2 group">
-                <div className="h-full bg-gradient-to-r from-emerald-900/60 to-[#021B1A]/80 border border-emerald-500/30 rounded-[32px] p-6 lg:p-10 relative overflow-hidden shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 hover:-translate-y-2">
-                  <div className="absolute -right-16 -top-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-[60px] group-hover:bg-emerald-400/20 transition-all duration-700"></div>
+              {/* My Collections - Small Card */}
+              <Link to="/collections" className={`group relative w-full flex items-center justify-between rounded-[24px] overflow-hidden transition-all duration-300 hover:-translate-y-2 p-6 min-h-[140px] border shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-[#052C2D]/80 to-[#021B1A]/90 backdrop-blur-xl border-emerald-500/20 hover:shadow-[0_15px_40px_rgba(52,211,153,0.2)] hover:border-emerald-500/50' : 'bg-white border-emerald-200 hover:shadow-[0_15px_40px_rgba(52,211,153,0.12)] hover:border-emerald-400'}`}>
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-3xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 group-hover:rotate-6 transition-all duration-500">
-                          <i className="fa-solid fa-layer-group text-3xl lg:text-4xl text-emerald-400"></i>
-                        </div>
-                        <div>
-                          <h3 className="text-2xl lg:text-4xl font-black text-white tracking-tight">
-                            My Collections
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
-                              Cloud Sync
-                            </span>
-                            <span className="text-emerald-400/60 text-xs font-medium italic">
-                              Your spiritual journey, saved.
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-emerald-100/70 text-base lg:text-xl leading-relaxed max-w-2xl mt-2 font-medium">
-                        Access all your bookmarked Ayahs, favorited Duas, and
-                        memorization progress in one centralized premium
-                        dashboard.
+                  <div className="flex flex-col gap-2 z-10 w-2/3">
+                      <h3 className={`text-xl font-bold transition-colors duration-300 ${theme === 'dark' ? 'text-white/90 group-hover:text-amber-300' : 'text-slate-800 group-hover:text-emerald-700'}`}>
+                          Collections
+                      </h3>
+                      <p className={`text-sm transition-colors ${theme === 'dark' ? 'text-emerald-400 group-hover:text-emerald-300' : 'text-emerald-600 group-hover:text-emerald-800'}`}>
+                          Saved Ayahs & Duas
                       </p>
-                    </div>
-
-                    <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-emerald-500 transition-all duration-500 self-end lg:self-center shadow-2xl group-hover:scale-110">
-                      <i className="fa-solid fa-chevron-right text-emerald-400 group-hover:text-white text-2xl"></i>
-                    </div>
+                      <div className={`w-10 h-1 rounded-full mt-2 group-hover:w-16 transition-all duration-500 ${theme === 'dark' ? 'bg-emerald-500/50 group-hover:bg-amber-400' : 'bg-emerald-200 group-hover:bg-emerald-500'}`} />
                   </div>
-                </div>
+
+                  <div className={`z-10 p-4 rounded-2xl border transition-all group-hover:-rotate-3 group-hover:scale-110 shadow-lg relative ${theme === 'dark' ? 'bg-white/5 border-white/10 group-hover:bg-white/10' : 'bg-emerald-50 border-emerald-200 group-hover:bg-emerald-100'}`}>
+                      <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 -z-10" />
+                      <Layers className={`w-10 h-10 transition-colors drop-shadow-lg ${theme === 'dark' ? 'text-emerald-400 group-hover:text-amber-300' : 'text-emerald-500 group-hover:text-emerald-700'}`} />
+                  </div>
               </Link>
 
               {/* Names of Allah Card */}

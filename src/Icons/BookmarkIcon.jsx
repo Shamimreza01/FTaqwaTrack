@@ -1,0 +1,22 @@
+export default function BookmarkIcon({
+  className = "",
+  fill = "currentColor",
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      id="bookmark"
+      data-name="Flat Color"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        id="primary"
+        d="M18,2H6A2,2,0,0,0,4,4V21a1,1,0,0,0,.5.86,1,1,0,0,0,1,0L12,18.15l6.5,3.72A1,1,0,0,0,19,22a.9.9,0,0,0,.5-.14A1,1,0,0,0,20,21V4A2,2,0,0,0,18,2Z"
+        style={{
+          fill: fill,
+        }}
+      />
+    </svg>
+  );
+}

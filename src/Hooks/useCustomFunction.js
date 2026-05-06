@@ -23,7 +23,6 @@ export default function useCustomFunction() {
 
   const getGeolocation = async () => {
     const position = await fetchGeolocation();
-    console.log("Geolocation fetched:", position.coords);
     return updateLocation(position.coords);
   };
 

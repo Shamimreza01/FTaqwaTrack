@@ -1,27 +1,26 @@
 import { Link } from "react-router-dom";
 import { useSettings } from "../contexts/SettingsContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { useRef } from "react";
 import moment from "moment";
-import { openDB } from "idb";
-
-const initDailyDB = async () => {
-    return openDB("dailyDB", 3, {
-        upgrade(db, oldVersion, newVersion) {
-            if (!db.objectStoreNames.contains("focus_sessions")) {
-                db.createObjectStore("focus_sessions", { keyPath: "id", autoIncrement: true });
-            }
-            if (!db.objectStoreNames.contains("salah_records")) {
-                db.createObjectStore("salah_records", { keyPath: "date" });
-            }
-            if (!db.objectStoreNames.contains("daily_notes")) {
-                db.createObjectStore("daily_notes", { keyPath: "date" });
-            }
-        },
-    });
-};
+import { initDailyDB } from "../utils/db";
+import { 
+  Type, 
+  Download, 
+  Upload, 
+  Home as HomeIcon, 
+  Layers, 
+  BookOpen, 
+  ChevronRight, 
+  Menu as MenuIcon,
+  Sun,
+  Moon,
+  Settings2
+} from "lucide-react";
 
 export default function Menu() {
     const { arabicFontSize, setArabicFontSize, translationFontSize, setTranslationFontSize } = useSettings();
+    const { theme, setTheme, toggleTheme, s } = useTheme();
     const fileInputRef = useRef(null);
 
     const handleExportData = async () => {
@@ -112,87 +111,129 @@ export default function Menu() {
     };
 
     return (
-        <div className="font-[system-ui] py-[80px] px-4 max-w-4xl mx-auto min-h-screen text-white relative">
-            <div className="w-full bg-[#021B1A]/90 backdrop-blur-xl border-b border-white/10 p-4 fixed top-0 left-0 z-50 shadow-md">
-                <h2 className="text-center text-emerald-400 font-bold text-xl drop-shadow-[0_0_10px_rgba(52,211,153,0.3)]">
-                    <i className="fa-solid fa-bars mr-2"></i> Menu & Settings
+        <div className={`font-[system-ui] py-[80px] px-4 max-w-4xl mx-auto min-h-screen ${s.text} relative`}>
+            <div className={`w-full ${s.nav} border-b p-4 fixed top-0 left-0 z-50 shadow-md`}>
+                <h2 className={`${s.accent} font-bold text-xl flex items-center justify-center gap-2`}>
+                    <MenuIcon className="w-5 h-5" /> Menu & Settings
                 </h2>
             </div>
 
             <div className="flex flex-col gap-6 mt-8">
 
+                {/* Appearance Section */}
+                <section className={`${s.card} rounded-[24px] p-6 shadow-xl`}>
+                    <h3 className={`text-xl font-bold ${s.accent} mb-6 flex items-center gap-3`}>
+                        <div className={`w-10 h-10 rounded-full ${theme === 'dark' ? 'bg-cyan-500/20' : 'bg-blue-500/20'} flex items-center justify-center`}>
+                            <Settings2 className="w-5 h-5" />
+                        </div>
+                        Appearance Settings
+                    </h3>
+
+                    <div className="flex flex-col gap-4">
+                        <label className={`text-sm font-semibold opacity-70 px-1 ${s.text}`}>Theme Mode</label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={() => setTheme('light')}
+                                className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-semibold transition-all ${
+                                    theme === 'light' 
+                                    ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/20' 
+                                    : `${s.sectionAlt} ${s.textSecondary} border-white/10 hover:bg-white/10`
+                                }`}
+                            >
+                                <Sun className="w-4 h-4" /> Light
+                            </button>
+                            <button
+                                onClick={() => setTheme('dark')}
+                                className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-semibold transition-all ${
+                                    theme === 'dark' 
+                                    ? 'bg-cyan-500 text-white border-cyan-500 shadow-lg shadow-cyan-500/20' 
+                                    : `${s.sectionAlt} ${s.textSecondary} border-slate-200 hover:bg-slate-100`
+                                }`}
+                            >
+                                <Moon className="w-4 h-4" /> Dark
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Settings Section */}
-                <section className="bg-white/5 border border-white/10 rounded-[24px] p-6 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
-                    <h3 className="text-xl font-bold text-emerald-400 mb-6 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                            <i className="fa-solid fa-font text-sm"></i>
+                <section className={`${s.card} rounded-[24px] p-6 shadow-xl`}>
+                    <h3 className={`text-xl font-bold ${s.accent} mb-6 flex items-center gap-3`}>
+                        <div className={`w-10 h-10 rounded-full ${theme === 'dark' ? 'bg-cyan-500/20' : 'bg-blue-500/20'} flex items-center justify-center`}>
+                            <Type className="w-5 h-5" />
                         </div>
                         Font Scaler Configuration
                     </h3>
 
                     {/* Arabic Font scale */}
-                    <div className="flex flex-col gap-4 mb-8 pb-8 border-b border-white/5">
-                        <div className="flex justify-between items-center text-white/80">
-                            <span className="font-semibold">Arabic Size</span>
-                            <span className="text-emerald-300 font-bold bg-emerald-500/10 px-3 py-1 rounded-full text-sm">{arabicFontSize}px</span>
+                    <div className={`flex flex-col gap-4 mb-8 pb-8 border-b ${theme === 'dark' ? 'border-white/5' : 'border-slate-200'}`}>
+                        <div className="flex justify-between items-center">
+                            <span className={`font-semibold ${s.text}`}>Arabic Size</span>
+                            <span className={`${s.accent} font-bold ${theme === 'dark' ? 'bg-white/5' : 'bg-blue-50 border border-blue-200'} px-3 py-1 rounded-full text-sm`}>{arabicFontSize}px</span>
                         </div>
                         <input
                             type="range"
                             min="20" max="80"
                             value={arabicFontSize}
                             onChange={(e) => setArabicFontSize(Number(e.target.value))}
-                            className="w-full appearance-none h-2 bg-white/10 rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-emerald-400 [&::-webkit-slider-thumb]:rounded-full cursor-pointer hover:[&::-webkit-slider-thumb]:scale-125 hover:[&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(52,211,153,0.8)] transition-all"
+                            className={`w-full appearance-none h-2 rounded-full outline-none cursor-pointer transition-all
+                                ${theme === 'dark' ? 'bg-white/10 [&::-webkit-slider-thumb]:bg-cyan-400' : 'bg-slate-200 [&::-webkit-slider-thumb]:bg-blue-600'}
+                                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
+                                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md`}
                         />
-                        <div className="p-4 rounded-xl bg-black/30 border border-white/5 flex items-center justify-center mt-2 group">
-                            <span className="font-arabic text-emerald-400 group-hover:-translate-y-1 transition-transform" style={{ fontSize: `${arabicFontSize}px` }}>بِسْمِ ٱللَّهِ</span>
+                        <div className={`p-4 rounded-xl ${s.sectionAlt} border ${theme === 'dark' ? 'border-white/5' : 'border-slate-200'} flex items-center justify-center mt-2`}>
+                            <span className="font-arabic" style={{ fontSize: `${arabicFontSize}px`, color: theme === 'dark' ? '#22d3ee' : '#2563eb' }}>بِسْمِ ٱللَّهِ</span>
                         </div>
                     </div>
 
                     {/* Translation Font scale */}
                     <div className="flex flex-col gap-4">
-                        <div className="flex justify-between items-center text-white/80">
-                            <span className="font-semibold">Translation Size</span>
-                            <span className="text-emerald-300 font-bold bg-emerald-500/10 px-3 py-1 rounded-full text-sm">{translationFontSize}px</span>
+                        <div className="flex justify-between items-center">
+                            <span className={`font-semibold ${s.text}`}>Translation Size</span>
+                            <span className={`${s.accent} font-bold ${theme === 'dark' ? 'bg-white/5' : 'bg-blue-50 border border-blue-200'} px-3 py-1 rounded-full text-sm`}>{translationFontSize}px</span>
                         </div>
                         <input
                             type="range"
                             min="12" max="32"
                             value={translationFontSize}
                             onChange={(e) => setTranslationFontSize(Number(e.target.value))}
-                            className="w-full appearance-none h-2 bg-white/10 rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-amber-400 [&::-webkit-slider-thumb]:rounded-full cursor-pointer hover:[&::-webkit-slider-thumb]:scale-125 hover:[&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(245,158,11,0.8)] transition-all"
+                            className={`w-full appearance-none h-2 rounded-full outline-none cursor-pointer transition-all
+                                ${theme === 'dark' ? 'bg-white/10 [&::-webkit-slider-thumb]:bg-amber-400' : 'bg-slate-200 [&::-webkit-slider-thumb]:bg-indigo-500'}
+                                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
+                                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md`}
                         />
-                        <div className="p-4 rounded-xl bg-black/30 border border-white/5 flex items-center justify-center mt-2 group text-center">
-                            <span className="text-white/80 group-hover:-translate-y-1 transition-transform" style={{ fontSize: `${translationFontSize}px` }}>In the Name of Allah, the Most Beneficent, the Most Merciful</span>
+                        <div className={`p-4 rounded-xl ${s.sectionAlt} border ${theme === 'dark' ? 'border-white/5' : 'border-slate-200'} flex items-center justify-center mt-2 text-center`}>
+                            <span className={`${s.text} group-hover:-translate-y-1 transition-transform`} style={{ fontSize: `${translationFontSize}px` }}>In the Name of Allah, the Most Beneficent, the Most Merciful</span>
                         </div>
                     </div>
                 </section>
 
                 {/* Data Backup & Restore Section */}
-                <section className="bg-white/5 border border-white/10 rounded-[24px] p-6 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
-                    <h3 className="text-xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
-                            <i className="fa-solid fa-cloud-arrow-up text-sm"></i>
+                <section className={`${s.card} rounded-[24px] p-6 shadow-xl`}>
+                    <h3 className={`text-xl font-bold ${s.accent} mb-6 flex items-center gap-3`}>
+                        <div className={`w-10 h-10 rounded-full ${theme === 'dark' ? 'bg-cyan-500/20' : 'bg-blue-500/20'} flex items-center justify-center`}>
+                            <Upload className="w-5 h-5" />
                         </div>
                         Data Management
                     </h3>
                     
-                    <p className="text-white/60 text-sm mb-6">
-                        Securely backup all your Salah logs, Focus sessions, daily notes, Quran bookmarks, and settings to a local file. You can restore them later if you switch devices.
+                    <p className={`${s.textSecondary} text-sm mb-6 leading-relaxed`}>
+                        Securely backup all your Salah logs, Focus sessions, daily notes, Quran bookmarks, and settings to a local file. You can restore them on any device.
                     </p>
 
                     <div className="grid grid-cols-2 gap-4">
                         <button 
                             onClick={handleExportData}
-                            className="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 hover:border-indigo-400 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                            className={`${s.buttonSecondary} py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2`}
                         >
-                            <i className="fa-solid fa-download"></i> Backup Data
+                            <Download className="w-4 h-4" /> Backup Data
                         </button>
                         
                         <button 
                             onClick={() => fileInputRef.current?.click()}
-                            className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 hover:border-emerald-400 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                            className={`${s.buttonPrimary} py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border border-transparent`}
                         >
-                            <i className="fa-solid fa-upload"></i> Restore Data
+                            <Upload className="w-4 h-4" /> Restore Data
                         </button>
                         <input 
                             type="file" 
@@ -204,29 +245,29 @@ export default function Menu() {
                     </div>
                 </section>
 
-                {/* User Links Section */}
-                <section className="bg-white/5 border border-white/10 rounded-[24px] p-2 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
-                    <Link to="/" className="flex items-center gap-4 p-4 hover:bg-white/5 rounded-xl transition-colors text-white/80 hover:text-white border-b border-white/5">
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                            <i className="fa-solid fa-home"></i>
-                        </div>
-                        <span className="font-semibold text-lg flex-1">Back to Home</span>
-                        <i className="fa-solid fa-chevron-right text-sm text-white/30"></i>
-                    </Link>
-                    <Link to="/collections" className="flex items-center gap-4 p-4 hover:bg-white/5 rounded-xl transition-colors text-white/80 hover:text-white border-b border-white/5">
-                        <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
-                            <i className="fa-solid fa-layer-group"></i>
-                        </div>
-                        <span className="font-semibold text-lg flex-1">My Collections</span>
-                        <i className="fa-solid fa-chevron-right text-sm text-white/30"></i>
-                    </Link>
-                    <Link to="/quran" className="flex items-center gap-4 p-4 hover:bg-white/5 rounded-xl transition-colors text-white/80 hover:text-white">
-                        <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400">
-                            <i className="fa-solid fa-book-open"></i>
-                        </div>
-                        <span className="font-semibold text-lg flex-1">Al-Quran Library</span>
-                        <i className="fa-solid fa-chevron-right text-sm text-white/30"></i>
-                    </Link>
+                {/* Navigation Links */}
+                <section className={`${s.card} border rounded-[24px] p-2 shadow-xl overflow-hidden`}>
+                    {[
+                        { to: "/", icon: HomeIcon, color: "emerald", label: "Back to Home" },
+                        { to: "/collections", icon: Layers, color: "blue", label: "My Collections" },
+                        { to: "/quran", icon: BookOpen, color: "amber", label: "Al-Quran Library" },
+                    ].map(({ to, icon: Icon, color, label }, i, arr) => (
+                        <Link
+                            key={to}
+                            to={to}
+                            className={`flex items-center gap-4 p-4 transition-colors ${
+                                i < arr.length - 1
+                                    ? `border-b ${theme === 'dark' ? 'border-white/5' : 'border-slate-100'}`
+                                    : ''
+                            } ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                        >
+                            <div className={`w-10 h-10 rounded-full bg-${color}-500/10 flex items-center justify-center text-${color}-${theme === 'dark' ? '400' : '600'}`}>
+                                <Icon className="w-5 h-5" />
+                            </div>
+                            <span className={`font-semibold text-lg flex-1 ${s.text}`}>{label}</span>
+                            <ChevronRight className={`w-4 h-4 ${s.textSecondary} opacity-40`} />
+                        </Link>
+                    ))}
                 </section>
 
             </div>

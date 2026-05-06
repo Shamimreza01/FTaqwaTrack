@@ -1,30 +1,16 @@
 import { useState, useEffect } from "react";
-import { openDB } from "idb";
 import { AnimatePresence } from "framer-motion";
 import moment from "moment";
+import { useTheme } from "../contexts/ThemeContext";
+import { initDailyDB } from "../utils/db";
 
 import DailyHeader from "../components/DailyComponents/DailyHeader";
 import SalahView from "../components/DailyComponents/SalahView";
 import FocusView from "../components/DailyComponents/FocusView";
 import NotesView from "../components/DailyComponents/NotesView";
 
-const initDailyDB = async () => {
-    return openDB("dailyDB", 3, {
-        upgrade(db, oldVersion, newVersion) {
-            if (!db.objectStoreNames.contains("focus_sessions")) {
-                db.createObjectStore("focus_sessions", { keyPath: "id", autoIncrement: true });
-            }
-            if (!db.objectStoreNames.contains("salah_records")) {
-                db.createObjectStore("salah_records", { keyPath: "date" });
-            }
-            if (!db.objectStoreNames.contains("daily_notes")) {
-                db.createObjectStore("daily_notes", { keyPath: "date" });
-            }
-        },
-    });
-};
-
 export default function Daily() {
+    const { s } = useTheme();
     const [activeTab, setActiveTab] = useState("salah");
     const [timeRange, setTimeRange] = useState(14);
     
@@ -57,6 +43,18 @@ export default function Daily() {
     useEffect(() => {
         loadData();
     }, [timeRange]);
+
+    useEffect(() => {
+        let interval = null;
+        if (isActive) {
+            interval = setInterval(() => {
+                setSeconds(s => s + 1);
+            }, 1000);
+        } else if (!isActive && seconds !== 0) {
+            clearInterval(interval);
+        }
+        return () => clearInterval(interval);
+    }, [isActive]);
 
     const loadData = async () => {
         try {
@@ -259,7 +257,7 @@ export default function Daily() {
     const focusFeed = historyFeed.filter(f => f.type === 'focus').slice(0, 5);
 
     return (
-        <div className="font-sans py-24 px-4 max-w-7xl mx-auto min-h-screen text-white relative z-10">
+        <div className={`font-sans py-24 px-4 max-w-7xl mx-auto min-h-screen ${s.text} relative z-10`}>
             <DailyHeader 
                 activeTab={activeTab} 
                 setActiveTab={setActiveTab} 
