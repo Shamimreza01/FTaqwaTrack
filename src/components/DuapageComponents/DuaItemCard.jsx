@@ -2,8 +2,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useSettings } from "../../contexts/SettingsContext";
 import { useTheme } from "../../contexts/ThemeContext";
-import BookmarkIcon from "../../Icons/BookmarkIcon";
-import HeartIcon from "../../Icons/HeartIcon";
+import BookmarkIcon from "../../Icon/BookmarkIcon";
+import HeartIcon from "../../Icon/HeartIcon";
 
 export default function DuaItemCard({
   dua,

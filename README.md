@@ -24,17 +24,17 @@
 
 ## ✨ Features at a Glance
 
-| Feature | Description |
-|---|---|
-| 🕋 **Prayer Times** | Accurate Salah times based on your GPS location using the Adhan calculation library |
-| 📖 **Al-Quran** | Full Quran with Arabic text, Bengali translation, and audio recitation |
-| 🤲 **Dua Library** | Curated collections including 40 Rabbana Duas, Motivational Ayahs & After-Salah Duas |
-| 📿 **99 Names of Allah** | Beautiful Asma ul Husna cards with memorization tracking |
-| 📊 **Daily Hub** | Track your 5 daily Salah (Jamat/Individual), Focus Sessions & personal journal notes |
-| 📅 **History Calendar** | Monthly heatmap showing your tracking consistency with missed-day indicators |
-| 📂 **My Collections** | Centralized dashboard for all your bookmarks, favorites & memorization progress |
-| 💾 **Backup & Restore** | Export all your data to a JSON file and restore it on any device |
-| 🔒 **100% Offline & Private** | All data stays on YOUR device. Zero tracking. Zero analytics. Zero servers. |
+| Feature                       | Description                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------ |
+| 🕋 **Prayer Times**           | Accurate Salah times based on your GPS location using the Adhan calculation library  |
+| 📖 **Al-Quran**               | Full Quran with Arabic text, Bengali translation, and audio recitation               |
+| 🤲 **Dua Library**            | Curated collections including 40 Rabbana Duas, Motivational Ayahs & After-Salah Duas |
+| 📿 **99 Names of Allah**      | Beautiful Asma ul Husna cards with memorization tracking                             |
+| 📊 **Daily Hub**              | Track your 5 daily Salah (Jamat/Individual), Focus Sessions & personal journal notes |
+| 📅 **History Calendar**       | Monthly heatmap showing your tracking consistency with missed-day indicators         |
+| 📂 **My Collections**         | Centralized dashboard for all your bookmarks, favorites & memorization progress      |
+| 💾 **Backup & Restore**       | Export all your data to a JSON file and restore it on any device                     |
+| 🔒 **100% Offline & Private** | All data stays on YOUR device. Zero tracking. Zero analytics. Zero servers.          |
 
 ---
 
@@ -105,7 +105,7 @@ TaqwaTrack/
 │   ├── contexts/                    # Settings & Menu context providers
 │   ├── data/                        # Static JSON data (Duas, Names, etc.)
 │   ├── Hooks/                       # Custom React hooks
-│   ├── Icons/                       # SVG icon components
+│   ├── Icon/                       # SVG icon components
 │   ├── pages/                       # Route-level page components
 │   ├── utils/                       # API helpers & utility functions
 │   ├── App.jsx                      # Root layout with navigation
@@ -123,21 +123,27 @@ TaqwaTrack/
 ## 📱 App Screens
 
 ### 🏠 Home Dashboard
+
 > Real-time prayer times with countdown, Suhoor/Iftar schedule, quick access cards to all features, and a responsive desktop/mobile layout with glassmorphism design.
 
 ### 📖 Al-Quran
+
 > Browse by edition or surah. Read Arabic text with translations side-by-side. Bookmark your last read position, favorite special Ayahs, and toggle Memorize Mode to track your Hifz journey.
 
 ### 🤲 Dua Collections
+
 > Three curated Dua packs with Arabic text, transliteration, and translations. Bookmark, favorite, and memorize individual Duas.
 
 ### 📊 Daily Hub
+
 > **Three powerful tabs:**
+>
 > - **Salah** — Log each of the 5 daily prayers as Jamat (27 pts) or Individual (1 pt). Visualize trends with area charts and monthly heatmaps. Missed days are flagged with a pulsing red dot.
 > - **Focus** — Deep focus timer with animated progress ring. Log sessions and track your productive minutes over time.
 > - **Notes** — Write multiple daily reflections with titles. Full CRUD support for managing your spiritual journal.
 
 ### 📂 My Collections
+
 > A unified dashboard with three tabs — **Bookmarks**, **Favorites**, and **Hifz** — showing all your saved Ayahs, Duas, and memorization progress in one premium view.
 
 ---
@@ -160,10 +166,10 @@ TaqwaTrack is built with a **privacy-first architecture**:
 
 Your data is precious. TaqwaTrack includes a built-in backup system accessible from the **Menu** page:
 
-| Action | What it does |
-|---|---|
-| **Backup Data** | Downloads a single `.json` file containing ALL your Salah logs, Focus sessions, Notes, Quran bookmarks, favorites, memorization progress, 99 Names progress, and app settings |
-| **Restore Data** | Upload a previously exported `.json` file to merge all data back into the app. The page auto-reloads to apply everything instantly |
+| Action           | What it does                                                                                                                                                                  |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Backup Data**  | Downloads a single `.json` file containing ALL your Salah logs, Focus sessions, Notes, Quran bookmarks, favorites, memorization progress, 99 Names progress, and app settings |
+| **Restore Data** | Upload a previously exported `.json` file to merge all data back into the app. The page auto-reloads to apply everything instantly                                            |
 
 > 💡 **Tip:** Store your backup file in Google Drive, iCloud, or email it to yourself for safekeeping!
 
