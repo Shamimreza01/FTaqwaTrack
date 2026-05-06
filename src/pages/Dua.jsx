@@ -1,8 +1,8 @@
 import DuaCard from "../components/DuapageComponents/DuaCard";
 import { useTheme } from "../contexts/ThemeContext";
-import HandsPrayingIcon from "../Icon/HandsPrayingIcon";
-import MosqueIcon from "../Icon/MosqueIcon";
-import StarSparkleIcon from "../Icon/StarSparkleIcon";
+import HandsPrayingIcon from "../icons/HandsPrayingIcon";
+import MosqueIcon from "../icons/MosqueIcon";
+import StarSparkleIcon from "../icons/StarSparkleIcon";
 
 export default function DuaCardContainer() {
   const { theme, s } = useTheme();

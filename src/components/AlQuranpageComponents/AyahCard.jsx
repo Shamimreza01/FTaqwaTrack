@@ -2,8 +2,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useSettings } from "../../contexts/SettingsContext";
 import { useTheme } from "../../contexts/ThemeContext";
-import BookmarkIcon from "../../Icon/BookmarkIcon";
-import HeartIcon from "../../Icon/HeartIcon";
+import BookmarkIcon from "../../icons/BookmarkIcon";
+import HeartIcon from "../../icons/HeartIcon";
 
 export default function AyahCard({
   ayah,

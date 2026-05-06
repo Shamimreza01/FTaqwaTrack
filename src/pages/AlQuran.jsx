@@ -1,9 +1,9 @@
 import AlQuranCard from "../components/AlQuranpageComponents/AlQuranCard";
 import { useTheme } from "../contexts/ThemeContext";
-import ArabicCalligraphyIcon from "../Icon/ArabicCalligraphyIcon";
-import GlobeIcon from "../Icon/GlobeIcon";
-import LanguageIcon from "../Icon/LanguageIcon";
-import QuranBookIcon from "../Icon/QuranBookIcon";
+import ArabicCalligraphyIcon from "../icons/ArabicCalligraphyIcon";
+import GlobeIcon from "../icons/GlobeIcon";
+import LanguageIcon from "../icons/LanguageIcon";
+import QuranBookIcon from "../icons/QuranBookIcon";
 
 export default function ItemCardContainer() {
   const { theme, s } = useTheme();
